@@ -1,0 +1,13 @@
+{
+  "name": "cgs",
+  "version": "1.0.5",
+  "description": "Core Geometric System - patch library for geometry and trigonometry",
+  "main": "core-geometric-system.js",
+  "types": "core-geometric-system.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": ["geometry", "trigonometry", "circle", "sphere", "cone", "angle"],
+  "author": "Your Name",
+  "license": "MIT"
+}
