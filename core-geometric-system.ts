@@ -1,6 +1,6 @@
 // core-geometric-system.ts - Core Geometric System (Patch Library)
 // No namespace/module usage, top-level exports for wide compatibility
-// import { CgsCircle, CgsSphere, CgsCone, CgsAngle } from "./core-geometric-system";
+// import { CgsCircle, CgsSphere, CgsCone } from "./core-geometric-system";
 
 
 export class CgsCircle {
