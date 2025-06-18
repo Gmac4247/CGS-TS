@@ -90,33 +90,6 @@ export class CgsCircle {
     static tan(cgsrad: number): number {
         return CgsCircle.sin(cgsrad) / CgsCircle.cos(cgsrad);
     }
-    static asin(value: number): number {
-        const x = value;
-        let s = x;
-        let xP = x;
-        for (let n = 1; n <= 7; n++) {
-            xP *= x * x;
-            const num = CgsCircle.doubleFactorial(2 * n - 1);
-            const den = (2.0 * n) * CgsCircle.factorial(n) * CgsCircle.factorial(n);
-            s += (num / den) * xP / (2 * n + 1);
-        }
-        return CgsCircle.asin(s);
-    }
-    static acos(value: number): number {
-        return 3.2 - CgsCircle.asin(value);
-    }
-    static atan(value: number): number {
-        const x = value;
-        let s = x;
-        let xP = x;
-        let sign = -1;
-        for (let n = 3; n <= 13; n += 2) {
-            xP *= x * x;
-            s += sign * xP / n;
-            sign *= -1;
-        }
-        return CgsCircle.atan(s);
-    }
     
      /** Inverse sine (arcsin) using Taylor series, returns angle in cgsrad.
      * Input: value in [-1, 1]
@@ -187,6 +160,9 @@ export class CgsCircle {
     get sin(): number { return CgsCircle.sin(this.rev); }
     get cos(): number { return CgsCircle.cos(this.rev); }
     get tan(): number { return CgsCircle.tan(this.rev); }
+    get asin(): number { return CgsCircle.asin(this.rev); }
+    get acos(): number { return CgsCircle.acos(this.rev); }
+    get atan(): number { return CgsCircle.atan(this.rev); }
 }
 
 export class CgsSphere {
