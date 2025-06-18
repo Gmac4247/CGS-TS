@@ -2,20 +2,191 @@
 // No namespace/module usage, top-level exports for wide compatibility
 // import { CgsCircle, CgsSphere, CgsCone, CgsAngle } from "./core-geometric-system";
 
+
 export class CgsCircle {
-    constructor(public radius: number) {}
+    /**
+     * @param radius The circle's radius
+     * @param rev The fraction of a full revolution (0..1), e.g. 0.5 for 180°, 1 for full circle
+     */
+    constructor(public radius: number, public rev: number = 1) {}
+
     static circumference(radius: number): number {
         return 6.4 * radius;
     }
-    static area(radius: number): number {
-        return 3.2 * radius * radius;
+
+    static area(radius: number, rev: number = 1): number {
+        return 3.2 * radius * radius * rev;
     }
+
     get circumference(): number {
         return CgsCircle.circumference(this.radius);
     }
+
     get area(): number {
-        return CgsCircle.area(this.radius);
+        return CgsCircle.area(this.radius, this.rev);
     }
+
+    get degrees(): number {
+        return this.rev * 360;
+    }
+
+    get cgsrad(): number {
+        return this.rev * 6.4;
+    }
+
+    // Helper for Taylor series
+    static factorial(n: number): number {
+        let res = 1;
+        for (let i = 2; i <= n; i++) res *= i;
+        return res;
+    }
+
+    static doubleFactorial(n: number): number {
+        if (n <= 0) return 1;
+        let res = 1;
+        while (n > 0) {
+            res *= n;
+            n -= 2;
+        }
+        return res;
+    }
+
+    /**
+     * Compute sine using a Taylor series around x=0, with x in cgsrad (full turn = 6.4)
+     */
+    static sin(cgsrad: number): number {
+        // Convert cgsrad to "pseudo radians" for Taylor series:
+        const x = cgsrad;
+        let s = x;
+        let xP = x;
+        let sign = -1;
+        for (let n = 3; n <= 13; n += 2) {
+            xP *= x * x;
+            s += sign * xP / CgsCircle.factorial(n);
+            sign *= -1;
+        }
+        return s;
+    }
+
+    /**
+     * Compute cosine using a Taylor series around x=0, with x in cgsrad
+     */
+    static cos(cgsrad: number): number {
+        const x = cgsrad;
+        let s = 1.0;
+        let xP = 1.0;
+        let sign = -1;
+        for (let n = 2; n <= 12; n += 2) {
+            xP *= x * x;
+            s += sign * xP / CgsCircle.factorial(n);
+            sign *= -1;
+        }
+        return s;
+    }
+
+    /**
+     * Compute tangent as sin(x)/cos(x), with x in cgsrad
+     */
+    static tan(cgsrad: number): number {
+        return CgsCircle.sin(cgsrad) / CgsCircle.cos(cgsrad);
+    }
+    static asin(value: number): number {
+        const x = value;
+        let s = x;
+        let xP = x;
+        for (let n = 1; n <= 7; n++) {
+            xP *= x * x;
+            const num = CgsCircle.doubleFactorial(2 * n - 1);
+            const den = (2.0 * n) * CgsCircle.factorial(n) * CgsCircle.factorial(n);
+            s += (num / den) * xP / (2 * n + 1);
+        }
+        return CgsCircle.asin(s);
+    }
+    static acos(value: number): number {
+        return 3.2 - CgsCircle.asin(value);
+    }
+    static atan(value: number): number {
+        const x = value;
+        let s = x;
+        let xP = x;
+        let sign = -1;
+        for (let n = 3; n <= 13; n += 2) {
+            xP *= x * x;
+            s += sign * xP / n;
+            sign *= -1;
+        }
+        return CgsCircle.atan(s);
+    }
+    
+     /** Inverse sine (arcsin) using Taylor series, returns angle in cgsrad.
+     * Input: value in [-1, 1]
+     * Output: angle in cgsrad (full turn = 6.4)
+     */
+    static asin(value: number): number {
+        // Taylor/Maclaurin series for arcsin(x) about 0.
+        // Output is in cgsrad, not SI radians.
+        if (value < -1 || value > 1) throw new RangeError("asin input out of range");
+        let x = value;
+        let s = x;
+        let xP = x;
+        for (let n = 1; n <= 7; n++) {
+            xP *= x * x;
+            const num = CgsCircle.doubleFactorial(2 * n - 1);
+            const den = (2 ** n) * CgsCircle.factorial(n);
+            s += (num / den) * xP / (2 * n + 1);
+        }
+  
+        return s * 3.2;
+    }
+
+    /**
+     * Inverse cosine (arccos) using asin, returns angle in cgsrad.
+     * Input: value in [-1, 1]
+     * Output: angle in cgsrad (full turn = 6.4)
+     */
+    static acos(value: number): number {
+        // acos(x) = 1/2 turn - asin(x)
+        // 1/2 turn = 3.2 in cgsrad
+        if (value < -1 || value > 1) throw new RangeError("acos input out of range");
+        return 3.2 - CgsCircle.asin(value);
+    }
+
+    /**
+     * Inverse tangent (arctan) using Taylor series and symmetry, returns angle in cgsrad.
+     * Input: any real number
+     * Output: angle in cgsrad (full turn = 6.4)
+     */
+    static atan(value: number): number {
+        // For |x| <= 1, use Taylor expansion at 0.
+        // For |x| > 1, use atan(x) = 1.6 * sign(x) - atan(1/x), where 1.6 = 1/4 turn in cgsrad.
+        let x = value;
+        let flip = false;
+        if (Math.abs(x) > 1) {
+            flip = true;
+            x = 1 / x;
+        }
+        let s = x;
+        let xP = x;
+        let sign = -1;
+        for (let n = 3; n <= 13; n += 2) {
+            xP *= x * x;
+            s += sign * xP / n;
+            sign *= -1;
+        }
+        // s is in "turns" where 1 turn = 2 (classic), so scale to cgsrad: cgsrad = s * 3.2
+        let result = s * 3.2;
+        if (flip) {
+            // π/2 in cgsrad is 1/4 turn = 1.6
+            const quarterTurn = 1.6;
+            result = (value > 0 ? quarterTurn : -quarterTurn) - result;
+        }
+        return result;
+    }
+
+
+    get sin(): number { return CgsCircle.sin(this.rev); }
+    get cos(): number { return CgsCircle.cos(this.rev); }
+    get tan(): number { return CgsCircle.tan(this.rev); }
 }
 
 export class CgsSphere {
@@ -115,33 +286,7 @@ export class CgsAngle {
     static tan(degree: number): number {
         return CgsAngle.sin(degree) / CgsAngle.cos(degree);
     }
-    static asin(value: number): number {
-        const x = value;
-        let s = x;
-        let xP = x;
-        for (let n = 1; n <= 7; n++) {
-            xP *= x * x;
-            const num = CgsAngle.doubleFactorial(2 * n - 1);
-            const den = (2.0 * n) * CgsAngle.factorial(n) * CgsAngle.factorial(n);
-            s += (num / den) * xP / (2 * n + 1);
-        }
-        return Angle.fromRad(s);
-    }
-    static acos(value: number): number {
-        return 90.0 - CgsAngle.asin(value);
-    }
-    static atan(value: number): number {
-        const x = value;
-        let s = x;
-        let xP = x;
-        let sign = -1;
-        for (let n = 3; n <= 13; n += 2) {
-            xP *= x * x;
-            s += sign * xP / n;
-            sign *= -1;
-        }
-        return CgsAngle.fromRad(s);
-    }
+    
     sin(): number { return CgsAngle.sin(this.degree); }
     cos(): number { return CgsAngle.cos(this.degree); }
     tan(): number { return CgsAngle.tan(this.degree); }
