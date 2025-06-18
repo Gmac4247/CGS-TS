@@ -106,7 +106,7 @@ export class CgsCircle {
         const den = (2 ** n) * CgsCircle.factorial(n);
         s += (num / den) * xP / (2 * n + 1);
     }
-    return s * 6.4;
+    return s;
     }
 
     /**
