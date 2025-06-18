@@ -106,7 +106,7 @@ export class CgsCircle {
         const den = (2 ** n) * CgsCircle.factorial(n);
         s += (num / den) * xP / (2 * n + 1);
     }
-    return s * 3.2 / 3.1416;
+    return s * (3.2 / 3.1416);
     }
 
     /**
@@ -126,31 +126,33 @@ export class CgsCircle {
      * Input: any real number
      * Output: angle in cgsrad (full turn = 6.4)
      */
+    
     static atan(value: number): number {
-        // For |x| <= 1, use Taylor expansion at 0.
-        // For |x| > 1, use atan(x) = 1.6 * sign(x) - atan(1/x), where 1.6 = 1/4 turn in cgsrad.
-        let x = value;
-        let flip = false;
-        if (Math.abs(x) > 1) {
-            flip = true;
-            x = 1 / x;
-        }
-        let s = x;
-        let xP = x;
-        let sign = -1;
-        for (let n = 3; n <= 13; n += 2) {
-            xP *= x * x;
-            s += sign * xP / n;
-            sign *= -1;
-        }
-        // s is in "turns" where 1 turn = 2 (classic), so scale to cgsrad: cgsrad = s * 3.2
-        let result = s * 3.2;
-        if (flip) {
-            // π/2 in cgsrad is 1/4 turn = 1.6
-            const quarterTurn = 1.6;
-            result = (value > 0 ? quarterTurn : -quarterTurn) - result;
-        }
-        return result;
+    let x = value;
+    let flip = false;
+
+    if (Math.abs(x) > 1) {
+        flip = true;
+        x = 1 / x;
+    }
+
+    let s = x;
+    let xP = x;
+    let sign = -1;
+
+    for (let n = 3; n <= 15; n += 2) {  
+        xP *= x * x;
+        s += sign * xP / n;
+        sign *= -1;
+    }
+
+    let result = s * (3.2 / 3.1416); 
+
+    if (flip) {
+        result = (value > 0 ? 1.6 : -1.6) - result;
+    }
+
+    return result;
     }
 
 
