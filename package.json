@@ -1,13 +1,13 @@
 {
-  "name": "cgs",
+  "name": "Core Geometric System ™",
   "version": "1.0.6",
-  "description": "Core Geometric System ™ - patch library for exact area and volume calculations",
+  "description": "Geometric calculator patch with exact formulas for circumference, area of circles, and volume of spheres and cones",
   "main": "core-geometric-system.js",
   "types": "core-geometric-system.d.ts",
   "scripts": {
     "build": "tsc"
   },
-  "keywords": ["geometry", "trigonometry", "circle", "sphere", "cone"],
-  "author": "Your Name",
+  "keywords": ["geometry", "circle", "sphere", "cone"],
+  "author": "Gaal Sandor",
   "license": "MIT"
 }
