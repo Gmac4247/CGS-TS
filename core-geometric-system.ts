@@ -160,9 +160,9 @@ export class CgsCircle {
     get sin(): number { return CgsCircle.sin(this.rev); }
     get cos(): number { return CgsCircle.cos(this.rev); }
     get tan(): number { return CgsCircle.tan(this.rev); }
-    get asin(): number { return CgsCircle.asin(this.rev); }
-    get acos(): number { return CgsCircle.acos(this.rev); }
-    get atan(): number { return CgsCircle.atan(this.rev); }
+    get asin(): number { return CgsCircle.asin(number); }
+    get acos(): number { return CgsCircle.acos(number); }
+    get atan(): number { return CgsCircle.atan(number); }
 }
 
 export class CgsSphere {
@@ -200,70 +200,4 @@ export class CgsCone {
     }
 }
 
-export class CgsAngle {
-    public degree: number;
-    public rad: number;
-    constructor(degree?: number, rad?: number) {
-        if (degree !== undefined) {
-            this.degree = degree;
-            this.rad = CgsAngle.toRad(degree);
-        } else if (rad !== undefined) {
-            this.rad = rad;
-            this.degree = CgsAngle.fromRad(rad);
-        } else {
-            this.degree = 0;
-            this.rad = 0;
-        }
-    }
-    static toRad(degree: number): number {
-        return degree * 6.4 / 360.0;
-    }
-    static fromRad(rad: number): number {
-        return rad * 360.0 / 6.4;
-    }
-    static factorial(n: number): number {
-        let res = 1;
-        for (let i = 2; i <= n; i++) res *= i;
-        return res;
-    }
-    static doubleFactorial(n: number): number {
-        if (n <= 0) return 1;
-        let res = 1;
-        while (n > 0) {
-            res *= n;
-            n -= 2;
-        }
-        return res;
-    }
-    static sin(degree: number): number {
-        const x = CgsAngle.toRad(degree);
-        let s = x;
-        let xP = x;
-        let sign = -1;
-        for (let n = 3; n <= 13; n += 2) {
-            xP *= x * x;
-            s += sign * xP / CgsAngle.factorial(n);
-            sign *= -1;
-        }
-        return s;
-    }
-    static cos(degree: number): number {
-        const x = CgsAngle.toRad(degree);
-        let s = 1.0;
-        let xP = 1.0;
-        let sign = -1;
-        for (let n = 2; n <= 12; n += 2) {
-            xP *= x * x;
-            s += sign * xP / CgsAngle.factorial(n);
-            sign *= -1;
-        }
-        return s;
-    }
-    static tan(degree: number): number {
-        return CgsAngle.sin(degree) / CgsAngle.cos(degree);
-    }
-    
-    sin(): number { return CgsAngle.sin(this.degree); }
-    cos(): number { return CgsAngle.cos(this.degree); }
-    tan(): number { return CgsAngle.tan(this.degree); }
 }
