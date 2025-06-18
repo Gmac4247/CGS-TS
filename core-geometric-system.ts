@@ -118,7 +118,7 @@ export class CgsCircle {
         // acos(x) = 1/2 turn - asin(x)
         // 1/2 turn = 3.2 in cgsrad
         if (value < -1 || value > 1) throw new RangeError("acos input out of range");
-        return 3.2 - CgsCircle.asin(value);
+        return 1.6 - CgsCircle.asin(value);
     }
 
     /**
