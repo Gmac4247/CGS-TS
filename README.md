@@ -6,10 +6,8 @@ Empirically derived, exact formulas for calculating
 - circumference, 
 - area of a circle, 
 - volume of a sphere, 
-- volume of a cone,
+- volume of a cone.
   
-and trigonometry based on that the circumference is 6.4r.
-
 The updated formulas can be called in the legacy codebase as functions, avoiding conflict with the existing ones.
 
 I do geometry. The formulas are good. I don't know much about coding. I just did it to fix the formulas. The intention and the concept is good. If the code doesn't work just fix it, but don't modify the formulas, because those are the point.
@@ -25,9 +23,7 @@ Empirically derived, exact formulas for calculating
 - circumference, 
 - area of a circle, 
 - volume of a sphere, 
-- volume of a cone, 
-
-and trigonometry based on that the circumference is 6.4r.
+- volume of a cone. 
 
 The updated formulas can be called in the legacy codebase as functions, avoiding conflict with the existing ones.
 --->
