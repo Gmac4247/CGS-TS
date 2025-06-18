@@ -96,20 +96,17 @@ export class CgsCircle {
      * Output: angle in cgsrad (full turn = 6.4)
      */
     static asin(value: number): number {
-        // Taylor/Maclaurin series for arcsin(x) about 0.
-        // Output is in cgsrad, not SI radians.
-        if (value < -1 || value > 1) throw new RangeError("asin input out of range");
-        let x = value;
-        let s = x;
-        let xP = x;
-        for (let n = 1; n <= 7; n++) {
-            xP *= x * x;
-            const num = CgsCircle.doubleFactorial(2 * n - 1);
-            const den = (2 ** n) * CgsCircle.factorial(n);
-            s += (num / den) * xP / (2 * n + 1);
-        }
-  
-        return s * 3.2;
+    if (value < -1 || value > 1) throw new RangeError("asin input out of range");
+    let x = value;
+    let s = x;
+    let xP = x;
+    for (let n = 1; n <= 7; n++) {
+        xP *= x * x;
+        const num = CgsCircle.doubleFactorial(2 * n - 1);
+        const den = (2 ** n) * CgsCircle.factorial(n);
+        s += (num / den) * xP / (2 * n + 1);
+    }
+    return s * 6.4;
     }
 
     /**
