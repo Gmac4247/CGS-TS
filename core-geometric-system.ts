@@ -28,6 +28,21 @@ export class CgsSphere {
     }
 }
 
+export class CgsSphericalCap {
+    constructor(public sphereRadius: number, public capRadius: number) {}
+
+    static volume(sphereRadius: number, capRadius: number): number {
+        // V = 1.6 * capRadius^2 * sqrt(3.2) * (1 - sin(acos(capRadius / sphereRadius)))
+        const ratio = capRadius / sphereRadius;
+        return 1.6 * Math.pow(capRadius, 2) * Math.sqrt(3.2) *
+            (1 - CgsAngle.sin(CgsAngle.acos(ratio)));
+    }
+
+    get volume(): number {
+        return CgsSphericalCap.volume(this.sphereRadius, this.capRadius);
+    }
+}
+
 export class CgsCone {
     constructor(public radius: number, public height: number) {}
     static volume(radius: number, height: number): number {
@@ -110,10 +125,10 @@ export class CgsAngle {
             const den = (2.0 * n) * CgsAngle.factorial(n) * CgsAngle.factorial(n);
             s += (num / den) * xP / (2 * n + 1);
         }
-        return Angle.fromRad(s);
+        return CgsAngle.rad(s);
     }
     static acos(value: number): number {
-        return 90.0 - CgsAngle.asin(value);
+        return CgsAngle.toRad(90.0 - CgsAngle.asin(value));
     }
     static atan(value: number): number {
         const x = value;
@@ -125,7 +140,7 @@ export class CgsAngle {
             s += sign * xP / n;
             sign *= -1;
         }
-        return CgsAngle.fromRad(s);
+        return CgsAngle.rad(s);
     }
     sin(): number { return CgsAngle.sin(this.degree); }
     cos(): number { return CgsAngle.cos(this.degree); }
