@@ -129,11 +129,6 @@ export class CgsCircle {
     
     static atan(value: number): number {
     let x = value;
-    let flip = false;
-
-    if (Math.abs(x) > 1) {
-        flip = true;
-        x = 1 / x;
     }
 
     let s = x;
@@ -148,8 +143,6 @@ export class CgsCircle {
 
     let result = s * (3.2 / 3.1416); 
 
-    if (flip) {
-        result = (value > 0 ? 1.6 : -1.6) - result;
     }
 
     return result;
