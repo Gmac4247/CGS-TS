@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc"
   },
-  "keywords": ["geometry", "circle", "sphere", "cone"],
+  "keywords": ["geometry", "math", "exact-circumference", "ecact-circle-area", "exact-sphere-volume", "exact-cone-volume", "exact-formulas"],
   "author": "Gaal Sandor",
   "license": "MIT"
 }
